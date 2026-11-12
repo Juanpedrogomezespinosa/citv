@@ -204,6 +204,7 @@ previa de Veiasa (https://www.itvcita.com/) para la estación **ITV ESTEPONA** y
   - última línea de hace más de 30 minutos (o ninguna): «Sin actividad reciente. Revisa el proceso.»
 - La fecha del texto sale de `FECHA_LIMITE`. Nunca se usa el correo. Si ntfy falla, se
   registra el error (sin el topic) y se reintenta dentro de esa media hora.
+- Canales: el latido de GitHub Actions (`npm run ciclo`) usa ntfy y email; el del bucle local (`npm run dev`) solo ntfy.
 
 ## Estructura
 

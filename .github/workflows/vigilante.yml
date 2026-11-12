@@ -1,0 +1,104 @@
+# Vigilante ITV Estepona: un ciclo de solo lectura por ejecución.
+# - Solo se lanza a mano (workflow_dispatch).
+# - El estado (data/, p. ej. data/lecturas.log) vive en la rama "estado", nunca en main.
+# - Ningún paso imprime valores de secretos: sin `set -x` ni `echo` de variables.
+
+name: Vigilante ITV
+
+on:
+  workflow_dispatch:
+  # activar cuando la ejecución manual sea correcta
+  # schedule:
+  #   - cron: '*/10 6-21 * * *'
+
+permissions:
+  contents: write # solo para empujar la rama estado
+
+concurrency:
+  group: vigilante
+  cancel-in-progress: false
+
+jobs:
+  ciclo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # Valores fijos (no son secretos).
+      HEADLESS: 'true'
+      MODO_SOLO_LECTURA: 'true'
+      FECHA_LIMITE: '2026-12-10'
+      INTERVALO_MINUTOS: '10'
+    steps:
+      - name: Checkout de main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Preparar la rama estado en data/ (git worktree)
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if git ls-remote --exit-code --heads origin estado > /dev/null; then
+            git fetch --quiet --depth=1 origin estado:estado
+            git worktree add data estado
+          else
+            # Rama nueva y vacía: sin historial de main ni datos del vehículo.
+            git worktree add --orphan -b estado data
+          fi
+
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Versión de Playwright (package-lock.json)
+        id: playwright
+        run: >-
+          node -e "require('fs').appendFileSync(process.env.GITHUB_OUTPUT,
+          'version=' + require('./package-lock.json').packages['node_modules/playwright'].version + '\n')"
+
+      - name: Caché de navegadores de Playwright
+        id: cache-playwright
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Instalar Chromium (solo si no hay caché)
+        if: steps.cache-playwright.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Ciclo
+        run: npm run ciclo
+        env:
+          # Los secretos solo se exponen a este paso.
+          MATRICULA: ${{ secrets.MATRICULA }}
+          BASTIDOR: ${{ secrets.BASTIDOR }}
+          LOCALIZADOR: ${{ secrets.LOCALIZADOR }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USUARIO: ${{ secrets.SMTP_USUARIO }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          EMAIL_DESTINO: ${{ secrets.EMAIL_DESTINO }}
+
+      # Siempre (también si el ciclo termina con código 1): lecturas.log, latido.json y
+      # estado.json se suben a la rama estado. Si el push falla, el job falla con un
+      # mensaje fijo, sin valores; el ciclo ya se ha ejecutado.
+      - name: Guardar data/ en la rama estado (nunca en main)
+        if: always()
+        working-directory: data
+        run: |
+          git add --all .
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit --quiet -m "estado: $(TZ=Europe/Madrid date '+%Y-%m-%d %H:%M')"
+          if ! git push --quiet origin HEAD:refs/heads/estado > /dev/null 2>&1; then
+            echo "::error::No se pudo subir la rama estado. El ciclo ya se ha ejecutado."
+            exit 1
+          fi

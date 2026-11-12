@@ -12,7 +12,8 @@
     "test": "vitest run",
     "probar:email": "tsx scripts/probar-email.ts",
     "probar:aviso": "tsx scripts/probar-aviso.ts",
-    "explorar": "tsx scripts/explorar.ts"
+    "explorar": "tsx scripts/explorar.ts",
+    "ciclo": "tsx src/ejecutar.ts"
   },
   "engines": {
     "node": ">=20"

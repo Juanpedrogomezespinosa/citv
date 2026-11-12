@@ -26,9 +26,14 @@ function diaYMes(fechaLimite: string): string {
   return `${dia} de ${MESES[mes - 1] ?? ''}`;
 }
 
-export function textoLatido(entrada: EntradaRegistro | null, ahora: Date, fechaLimite: string): string {
+export function textoLatido(
+  entrada: EntradaRegistro | null,
+  ahora: Date,
+  fechaLimite: string,
+  minutosSinActividad: number = MINUTOS_SIN_ACTIVIDAD,
+): string {
   if (entrada === null) return SIN_ACTIVIDAD;
-  if (minutosEntre(entrada.cuando, partesMadrid(ahora).texto) > MINUTOS_SIN_ACTIVIDAD) return SIN_ACTIVIDAD;
+  if (minutosEntre(entrada.cuando, partesMadrid(ahora).texto) > minutosSinActividad) return SIN_ACTIVIDAD;
 
   const hhmm = entrada.cuando.slice(11, 16);
   if (entrada.estado === 'detenido') return `Lectura detenida (${entrada.motivo}). Último ciclo: ${hhmm}.`;
