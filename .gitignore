@@ -1,0 +1,24 @@
+# Dependencias y compilación
+node_modules/
+dist/
+
+# Variables de entorno (datos personales)
+.env
+.env.*
+!.env.example
+
+# Capturas de pantalla y artefactos de Playwright
+capturas/
+screenshots/
+*.png
+*.jpg
+*.jpeg
+test-results/
+playwright-report/
+
+# Logs
+logs/
+*.log
+
+# Sistema
+.DS_Store
