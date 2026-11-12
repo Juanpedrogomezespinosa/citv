@@ -1,4 +1,4 @@
-# Vigilante ITV Estepona: un ciclo de solo lectura por ejecución.
+# Vigilante ITV Estepona: un ciclo de solo lectura por ejecución..
 # - Solo se lanza a mano (workflow_dispatch).
 # - El estado (data/, p. ej. data/lecturas.log) vive en la rama "estado", nunca en main.
 # - Ningún paso imprime valores de secretos: sin `set -x` ni `echo` de variables.
@@ -23,10 +23,10 @@ jobs:
     timeout-minutes: 20
     env:
       # Valores fijos (no son secretos).
-      HEADLESS: 'true'
-      MODO_SOLO_LECTURA: 'true'
-      FECHA_LIMITE: '2026-12-10'
-      INTERVALO_MINUTOS: '10'
+      HEADLESS: "true"
+      MODO_SOLO_LECTURA: "true"
+      FECHA_LIMITE: "2026-12-10"
+      INTERVALO_MINUTOS: "10"
     steps:
       - name: Checkout de main
         uses: actions/checkout@v4
