@@ -48,11 +48,11 @@ describe('vigilante.yml', () => {
     expect(YAML).toMatch(/^\s+INTERVALO_MINUTOS: '10'$/m);
   });
 
-  it('solo workflow_dispatch: el schedule está comentado, con su aviso', () => {
-    expect(activas.some((l) => /^\s*workflow_dispatch:/.test(l))).toBe(true);
-    expect(activas.some((l) => /^\s*schedule:/.test(l))).toBe(false);
-    expect(activas.some((l) => /cron:/.test(l))).toBe(false);
-    expect(YAML).toMatch(/#\s*activar cuando la ejecución manual sea correcta\n\s*#\s*schedule:/);
+  it('schedule activo con el cron "*/15 6-21 * * *" y workflow_dispatch', () => {
+    expect(YAML).toContain('on:\n  schedule:\n    - cron: "*/15 6-21 * * *"\n  workflow_dispatch:\n');
+    const crons = activas.filter((l) => /cron:/.test(l));
+    expect(crons).toEqual(['    - cron: "*/15 6-21 * * *"']);
+    expect(YAML).not.toMatch(/activar cuando la ejecución manual sea correcta/);
   });
 
   it('permisos y concurrencia', () => {

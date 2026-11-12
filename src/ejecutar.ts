@@ -4,7 +4,7 @@
 // 3. Parada automática: si las dos últimas líneas son "detenido", avisa por ntfy y email
 //    UNA vez (marca en data/estado.json la línea que lo provocó) hasta la próxima lectura
 //    completa.
-// 4. Latido: de 09:00 a 09:14 y de 20:00 a 20:14, si ese tramo no consta en
+// 4. Latido: de 09:00 a 09:29 y de 20:00 a 20:29, si ese tramo no consta en
 //    data/latido.json, envía el estado por ntfy y email y lo marca. El texto se calcula
 //    con las líneas que ya había en data/lecturas.log ANTES de añadir la de este ciclo:
 //    "Sin actividad reciente" refleja si las ejecuciones anteriores se han parado.
@@ -49,10 +49,10 @@ export function fueraDeHorario(fecha: Date): boolean {
   return hora >= 23 || hora < 8;
 }
 
-/** Tramo de latido ("AAAA-MM-DD 09" o "AAAA-MM-DD 20") si la hora cae en 09:00–09:14 o 20:00–20:14. */
+/** Tramo de latido ("AAAA-MM-DD 09" o "AAAA-MM-DD 20") si la hora cae en 09:00–09:29 o 20:00–20:29. */
 export function tramoLatido(fecha: Date): string | null {
   const { fecha: dia, hora, minuto } = partesMadrid(fecha);
-  if ((hora === 9 || hora === 20) && minuto < 15) return `${dia} ${String(hora).padStart(2, '0')}`;
+  if ((hora === 9 || hora === 20) && minuto < 30) return `${dia} ${String(hora).padStart(2, '0')}`;
   return null;
 }
 
@@ -200,7 +200,7 @@ export async function ejecutarUnaVez(env: NodeJS.ProcessEnv = process.env, deps:
     log.error(`No se pudo comprobar la parada automática (${textoSeguro(error)}).`);
   }
 
-  // 4. Latido (09:00–09:14 y 20:00–20:14), una vez por tramo, con el texto calculado antes.
+  // 4. Latido (09:00–09:29 y 20:00–20:29), una vez por tramo, con el texto calculado antes.
   if (tramo !== null && mensajeLatido !== null) {
     const mensaje = mensajeLatido;
     try {

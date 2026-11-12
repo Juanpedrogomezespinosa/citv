@@ -6,10 +6,9 @@
 name: Vigilante ITV
 
 on:
+  schedule:
+    - cron: "*/15 6-21 * * *"
   workflow_dispatch:
-  # activar cuando la ejecución manual sea correcta
-  # schedule:
-  #   - cron: '*/10 6-21 * * *'
 
 permissions:
   contents: write # solo para empujar la rama estado

@@ -147,10 +147,10 @@ describe('dentro de la ventana: una sola vuelta', () => {
   });
 });
 
-describe('latido (09:00–09:14 y 20:00–20:14, ntfy y email)', () => {
+describe('latido (09:00–09:29 y 20:00–20:29, ntfy y email)', () => {
   it('solo en los tramos y una vez por tramo', async () => {
     cicloLectura.mockResolvedValue(COMPLETA);
-    for (const hora of ['08:59', '09:00', '09:10', '09:14', '09:15', '12:00', '20:00', '20:14', '20:15']) {
+    for (const hora of ['08:59', '09:00', '09:15', '09:29', '09:30', '12:00', '20:00', '20:15', '20:29', '20:30']) {
       await ejecutar(hora);
     }
     await ejecutar('09:05', 13); // al día siguiente vuelve a tocar
@@ -167,9 +167,13 @@ describe('latido (09:00–09:14 y 20:00–20:14, ntfy y email)', () => {
 
   it('tramoLatido', () => {
     expect(tramoLatido(madrid('09:00'))).toBe('2026-11-12 09');
-    expect(tramoLatido(madrid('20:14'))).toBe('2026-11-12 20');
-    expect(tramoLatido(madrid('09:15'))).toBeNull();
+    expect(tramoLatido(madrid('09:15'))).toBe('2026-11-12 09'); // la ejecución de las :15 también entra
+    expect(tramoLatido(madrid('09:29'))).toBe('2026-11-12 09');
+    expect(tramoLatido(madrid('20:29'))).toBe('2026-11-12 20');
+    expect(tramoLatido(madrid('08:59'))).toBeNull();
+    expect(tramoLatido(madrid('09:30'))).toBeNull();
     expect(tramoLatido(madrid('19:59'))).toBeNull();
+    expect(tramoLatido(madrid('20:30'))).toBeNull();
   });
 
   it('"Sin actividad reciente" si la última lectura tiene más de 60 minutos', () => {
