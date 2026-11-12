@@ -9,7 +9,10 @@
     "dev": "tsx src/index.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
-    "test": "vitest run"
+    "test": "vitest run",
+    "probar:email": "tsx scripts/probar-email.ts",
+    "probar:aviso": "tsx scripts/probar-aviso.ts",
+    "explorar": "tsx scripts/explorar.ts"
   },
   "engines": {
     "node": ">=20"
@@ -17,10 +20,12 @@
   "dependencies": {
     "cheerio": "^1.2.0",
     "dotenv": "^16.4.5",
+    "nodemailer": "^10.5.0",
     "playwright": "^1.49.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
+    "@types/nodemailer": "^8.0.2",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"

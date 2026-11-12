@@ -21,7 +21,8 @@ export class CalendarioError extends Error {
   }
 }
 
-const MESES = [
+/** Nombres de los meses en español, en minúsculas (ninguno lleva tilde). */
+export const MESES = [
   'enero',
   'febrero',
   'marzo',
@@ -107,7 +108,8 @@ export function leerCalendario(html: string): EstadoCalendario {
   };
 }
 
-function parsearFechaLimite(fechaLimite: string): { anio: number; mes: number; dia: number } {
+/** Valida y descompone una fecha AAAA-MM-DD (p. ej. FECHA_LIMITE). */
+export function parsearFechaLimite(fechaLimite: string): { anio: number; mes: number; dia: number } {
   const partes = /^(\d{4})-(\d{2})-(\d{2})$/.exec(fechaLimite.trim());
   if (partes === null) {
     throw new CalendarioError(`FECHA_LIMITE debe tener formato AAAA-MM-DD: "${fechaLimite}".`);

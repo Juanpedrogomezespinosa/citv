@@ -1,0 +1,451 @@
+<div class="calendar">
+  <form
+    name="citaDiaHoraForm"
+    id="formularioAcceso"
+    method="post"
+    action="/cambiarSemana.do"
+  >
+    <div>
+      <input
+        type="hidden"
+        name="org.apache.struts.taglib.html.TOKEN"
+        value="TOKEN_FALSO"
+      />
+    </div>
+    <input type="hidden" name="referencia" value="10/12/2026" id="referencia" />
+    <input type="hidden" name="fechaCita" value="10/12/2026" id="fechaCita" />
+    <input
+      type="hidden"
+      name="fechaCitaPropuesta"
+      value=""
+      id="fechaCitaPropuesta"
+    />
+    <input type="hidden" name="cambioFecha" value="" id="cambioFecha" />
+
+    <div id="calendario" style="visibility: visible">
+      <div
+        style="
+          position: relative;
+          margin-left: 1em;
+          margin-bottom: 1em;
+          width: 175;
+          top: 0;
+          left: 0;
+        "
+        id="calendar-container"
+      >
+        <script type="text/javascript">
+          var SPECIAL_DAYS = {
+            20269: [
+              31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16,
+              15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
+            ],
+            20268: [
+              30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15,
+              14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
+            ],
+            20267: [
+              31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16,
+              15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
+            ],
+            20266: [
+              31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16,
+              15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
+            ],
+            20265: [
+              30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15,
+              14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
+            ],
+            20264: [
+              31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16,
+              15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
+            ],
+            20263: [
+              30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15,
+              14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
+            ],
+            20262: [
+              31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16,
+              15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
+            ],
+            20261: [
+              28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13,
+              12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
+            ],
+            20260: [
+              31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16,
+              15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
+            ],
+            202611: [
+              31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16,
+              15, 14, 6, 7, 8, 13, 5, 1, 2, 3, 4, 9,
+            ],
+            202610: [
+              30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15,
+              14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
+            ],
+          };
+
+          function dateIsSpecial(year, month, day) {
+            var string = "";
+            var res = false;
+            string = string + year + month;
+            var m = SPECIAL_DAYS[string];
+            if (!m) {
+              return res;
+            } else {
+              for (var i in m) {
+                if (m[i] == day) res = true;
+              }
+            }
+            return res;
+          }
+
+          function dateIsPropuestaDate(date, referencia) {
+            var string = "";
+            var res = false;
+
+            var curr_date = date.getDate();
+            var curr_month = date.getMonth() + 1;
+            var curr_year = date.getFullYear();
+
+            if (curr_month < 10) {
+              curr_month = "0" + curr_month;
+            }
+            if (curr_date < 10) {
+              curr_date = "0" + curr_date;
+            }
+
+            string = string + curr_year + curr_month + curr_date;
+
+            var m = "";
+            if (referencia) {
+              var m = "20261210";
+            }
+
+            if (!m) {
+              return res;
+            } else {
+              if (m == string) {
+                res = true;
+              }
+            }
+            return res;
+          }
+
+          function dateIsDiaSeleccionadoDate(date) {
+            var string = "";
+            var res = false;
+
+            var curr_date = date.getDate();
+            var curr_month = date.getMonth() + 1;
+            var curr_year = date.getFullYear();
+
+            if (curr_month < 10) {
+              curr_month = "0" + curr_month;
+            }
+            if (curr_date < 10) {
+              curr_date = "0" + curr_date;
+            }
+
+            string = string + curr_year + curr_month + curr_date;
+
+            var m = "20261210";
+
+            if (!m) {
+              return res;
+            } else {
+              if (m == string) {
+                res = true;
+              }
+            }
+            return res;
+          }
+
+          function ourDateStatusFunc(date, y, m, d) {
+            if (
+              dateIsPropuestaDate(date, false) &&
+              !dateIsDiaSeleccionadoDate(date)
+            ) {
+              return "propuesta";
+            } else if (dateIsDiaSeleccionadoDate(date)) {
+              return "special_sabado";
+            } else if (
+              !dateIsSpecial(y, m, d) &&
+              dateIsPropuestaDate(date, true)
+            ) {
+              return "special";
+            } else if (
+              !dateIsSpecial(y, m, d) &&
+              !dateIsPropuestaDate(date, false) &&
+              !dateIsDiaSeleccionadoDate(date)
+            ) {
+              return "special";
+            } else return "disabled";
+          }
+
+          var opts = {
+            lines: 13,
+            length: 28,
+            width: 14,
+            radius: 42,
+            scale: 1,
+            corners: 1,
+            color: "#000",
+            opacity: 0.25,
+            rotate: 0,
+            direction: 1,
+            speed: 1,
+            trail: 60,
+            fps: 20,
+            zIndex: 2e9,
+            className: "spinner",
+            top: "50%",
+            left: "50%",
+            shadow: false,
+            hwaccel: false,
+            position: "absolute",
+          };
+
+          function dateChanged(calendar) {
+            document.getElementById("modal").style.display = "block";
+            var target = document.getElementById("spinnerContainer");
+            var spinner = new Spinner(opts).spin(target);
+
+            if (calendar.dateClicked) {
+              var y = calendar.date.getFullYear();
+              var m = calendar.date.getMonth() + 1;
+              var d = calendar.date.getDate();
+
+              if (
+                !dateIsSpecial(y, m - 1, d) ||
+                dateIsPropuestaDate(calendar.date)
+              ) {
+                document.getElementById("fechaCita").value =
+                  d + "/" + m + "/" + y;
+                document.getElementById("formularioAcceso").submit();
+              }
+            } else {
+              var y = calendar.date.getFullYear();
+              var m = calendar.date.getMonth() + 1;
+              var d = calendar.date.getDate();
+
+              document.getElementById("referencia").value =
+                d + "/" + m + "/" + y;
+              document.getElementById("formularioAcceso").action =
+                "/cambiarMesAnyo.do";
+              document.getElementById("formularioAcceso").submit();
+            }
+          }
+
+          Calendar.setup({
+            flat: "calendar-container",
+            range: [2026, 2026],
+            flatCallback: dateChanged,
+            dateStatusFunc: ourDateStatusFunc,
+            date: "12/10/2026",
+          });
+        </script>
+
+        <div class="calendar" style="display: block">
+          <table cellspacing="0" cellpadding="20" style="visibility: visible">
+            <thead>
+              <tr class="headrow">
+                <td colspan="1" class="button nav">
+                  <div unselectable="on"></div>
+                </td>
+                <td colspan="5" class="title">Noviembre, 2026</td>
+                <td colspan="1" class="button nav">
+                  <div unselectable="on"></div>
+                </td>
+              </tr>
+              <tr class="daynames">
+                <td class="day name">Lun</td>
+                <td class="day name">Mar</td>
+                <td class="day name">Mié</td>
+                <td class="day name">Jue</td>
+                <td class="day name">Vie</td>
+                <td class="day name">Sáb</td>
+                <td class="name day weekend">Dom</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="daysrow">
+                <td class="emptycell">&nbsp;</td>
+                <td class="emptycell">&nbsp;</td>
+                <td class="emptycell">&nbsp;</td>
+                <td class="emptycell">&nbsp;</td>
+                <td class="emptycell">&nbsp;</td>
+                <td class="emptycell">&nbsp;</td>
+                <td class="day disabled">1</td>
+              </tr>
+              <tr class="daysrow">
+                <td class="day disabled">2</td>
+                <td class="day disabled">3</td>
+                <td class="day disabled">4</td>
+                <td class="day disabled">5</td>
+                <td class="day disabled">6</td>
+                <td class="day disabled">7</td>
+                <td class="day disabled">8</td>
+              </tr>
+              <tr class="daysrow">
+                <td class="day disabled">9</td>
+                <td class="day disabled">10</td>
+                <td class="day disabled">11</td>
+                <td class="day disabled">12</td>
+                <td class="day disabled">13</td>
+                <td class="day disabled">14</td>
+                <td class="day disabled">15</td>
+              </tr>
+              <tr class="daysrow">
+                <td class="day disabled">16</td>
+                <td class="day disabled">17</td>
+                <td class="day disabled">18</td>
+                <td class="day disabled">19</td>
+                <td class="day disabled">20</td>
+                <td class="day disabled">21</td>
+                <td class="day disabled">22</td>
+              </tr>
+              <tr class="daysrow">
+                <td class="day disabled">23</td>
+                <td class="day disabled">24</td>
+                <td class="day disabled">25</td>
+                <td class="day disabled">26</td>
+                <td class="day disabled">27</td>
+                <td class="day disabled">28</td>
+                <td class="day disabled">29</td>
+              </tr>
+              <tr class="daysrow">
+                <td class="day disabled">30</td>
+                <td class="emptycell">&nbsp;</td>
+                <td class="emptycell">&nbsp;</td>
+                <td class="emptycell">&nbsp;</td>
+                <td class="emptycell">&nbsp;</td>
+                <td class="emptycell">&nbsp;</td>
+                <td class="emptycell">&nbsp;</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="footrow">
+                <td colspan="7" class="ttip">
+                  Mes siguiente (mantener para menú)
+                </td>
+              </tr>
+            </tfoot>
+          </table>
+          <div class="combo">
+            <div class="label">Ene</div>
+            <div class="label">Feb</div>
+            <div class="label">Mar</div>
+            <div class="label">Abr</div>
+            <div class="label">May</div>
+            <div class="label">Jun</div>
+            <div class="label">Jul</div>
+            <div class="label">Ago</div>
+            <div class="label">Sep</div>
+            <div class="label">Oct</div>
+            <div class="label">Nov</div>
+            <div class="label">Dic</div>
+          </div>
+          <div class="combo">
+            <div class="label"></div>
+            <div class="label"></div>
+            <div class="label"></div>
+            <div class="label"></div>
+            <div class="label"></div>
+            <div class="label"></div>
+            <div class="label"></div>
+            <div class="label"></div>
+            <div class="label"></div>
+            <div class="label"></div>
+            <div class="label"></div>
+            <div class="label"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="recuadro"
+      style="visibility: hidden; position: absolute; top: 10px"
+    >
+      <p>Introduzca una fecha:<br /></p>
+      <p>
+        <input
+          type="text"
+          name="fechaCita"
+          size="10"
+          value="10/12/2026"
+          id="fechaCita"
+        />
+      </p>
+      <div class="botonera derecha">
+        <input type="submit" value="aceptar" class="btn" />
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="mensaje error"><ul><li>No hay días seleccionables para la estación elegida en el mes seleccionado.</li></ul></div>
+
+<div class="seleccion_hora">
+  <div class="interior">
+    <h3>2. Seleccione una hora:</h3>
+    <form
+      name="citaPaso5Form"
+      id="formulario"
+      method="post"
+      action="/solicitudCitaPaso5.do"
+    >
+      <div>
+        <input
+          type="hidden"
+          name="org.apache.struts.taglib.html.TOKEN"
+          value="TOKEN_FALSO"
+        />
+      </div>
+      <input type="hidden" name="indice" value="0" id="indice" />
+      <input type="hidden" name="fecha" value="0" id="fecha" />
+      <input type="hidden" name="cambioFecha" value="" id="cambioFecha" />
+
+      <p>
+        <label class="block" for="horas">Horas disponibles:</label>
+        <select name="horasCita" onchange="seleccionaHora()" id="horasCita">
+          <option value="-1">Seleccione una hora</option>
+          <option value="12:23:00">12:14</option>
+          <option value="12:27:00">12:18</option>
+          <option value="12:49:00">12:40</option>
+          <option value="12:57:00">12:48</option>
+          <option value="13:06:00">12:57</option>
+          <option value="13:31:00">13:22</option>
+          <option value="13:48:00">13:39</option>
+          <option value="14:30:00">14:21</option>
+          <option value="14:47:00">14:38</option>
+          <option value="15:04:00">14:55</option>
+          <option value="15:21:00">15:12</option>
+        </select>
+      </p>
+
+      <p>
+        <label for="eleccion" class="block">Su elección actual es:</label>
+        <input
+          type="text"
+          id="fechaSeleccionada"
+          name="fechaSeleccionada"
+          value="jueves, 10/12/2026"
+          class="largo"
+          readonly="readonly"
+        />
+      </p>
+      <div class="botonera">
+        <input
+          type="button"
+          name="Aceptar"
+          value="Aceptar"
+          onclick="enviar(10, 1796857200000)"
+          class="boton derecha"
+        />
+      </div>
+    </form>
+  </div>
+</div>

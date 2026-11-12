@@ -7,6 +7,9 @@ dist/
 .env.*
 !.env.example
 
+# Estado local (huecos ya notificados)
+data/
+
 # Capturas de pantalla y artefactos de Playwright
 capturas/
 screenshots/

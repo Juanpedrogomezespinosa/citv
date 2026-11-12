@@ -39,6 +39,12 @@ describe('leerCalendario', () => {
     expect(estado.diasDisponibles).toContain(12);
   });
 
+  it('lee las horas del fixture (texto de cada opción, sin value="-1")', () => {
+    expect(estado.horas).toEqual([
+      '12:14', '12:18', '12:40', '12:48', '12:57', '13:22', '13:39', '14:21', '14:38', '14:55', '15:12',
+    ]);
+  });
+
   it('descarta la opción "Seleccione una hora" (value -1)', () => {
     expect(estado.horas).not.toContain('Seleccione una hora');
     for (const hora of estado.horas) expect(hora).toMatch(/^\d{1,2}:\d{2}$/);
